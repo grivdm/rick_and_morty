@@ -12,7 +12,7 @@ class CharactersListPage extends StatelessWidget {
         centerTitle: true,
         actions: [IconButton(onPressed: () {}, icon: const Icon(Icons.search))],
       ),
-      body: const CharactersListWidget(),
+      body: CharactersListWidget(),
     );
   }
 }
