@@ -27,7 +27,7 @@ class CharacterModel extends CharacterEntity {
       'gender': gender,
       'origin': (origin as LocationModel?)?.toMap(),
       'location': (location as LocationModel?)?.toMap(),
-      'image': image,
+      'image': image.toString(),
       'episode': episode,
       'created': created.toIso8601String(),
     };
@@ -43,7 +43,7 @@ class CharacterModel extends CharacterEntity {
       gender: map['gender'] as String,
       origin: LocationModel.fromMap(map['origin']),
       location: LocationModel.fromMap(map['location']),
-      image: map['image'] as String,
+      image: Uri.parse(map['image']),
       episode:
           (map['episode'] as List<dynamic>).map((e) => e.toString()).toList(),
       created: DateTime.parse(map['created']),

@@ -12,7 +12,7 @@ class CharacterEntity extends Equatable {
   final String gender;
   final LocationEntity origin;
   final LocationEntity location;
-  final String image;
+  final Uri image;
   final List<String> episode;
   final DateTime created;
   const CharacterEntity({

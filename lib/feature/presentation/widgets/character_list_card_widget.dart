@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:rick_and_morty/common/app_colors.dart';
 
 import 'package:rick_and_morty/feature/domain/entities/character_entity.dart';
+import 'package:rick_and_morty/feature/presentation/widgets/character_image_widget.dart';
 
 class CharacterListCardWidget extends StatelessWidget {
   final CharacterEntity character;
@@ -18,11 +19,8 @@ class CharacterListCardWidget extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          Image.network(
-            character.image,
-            width: 160,
-            height: 160,
-          ),
+          CharacterImageWidget(
+              width: 160, height: 160, imageUrl: character.image),
           Expanded(
             child: Padding(
               padding: const EdgeInsets.all(16),
