@@ -29,9 +29,10 @@ class CharactersRemoteDatasourceImpl implements CharactersRemoteDatasource {
         .get(Uri.parse(url), headers: {'Content-Type': 'application/json'});
 
     if (response.statusCode == 200) {
+      print('response: ${response.body}');
       final rawCharacters = jsonDecode(response.body);
       return (rawCharacters['results'] as List)
-          .map((e) => CharacterModel.fromJson(e))
+          .map((e) => CharacterModel.fromMap(e))
           .toList();
     } else {
       throw ServerException();

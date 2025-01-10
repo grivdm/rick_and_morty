@@ -13,10 +13,11 @@ class CharacterRepositoryImpl implements CharacterRepository {
   final CharactersLocalDatasource localDatasource;
   final NetworkInfo networkInfo;
 
-  CharacterRepositoryImpl(
-      {required this.remoteDatasource,
-      required this.localDatasource,
-      required this.networkInfo});
+  CharacterRepositoryImpl({
+    required this.remoteDatasource,
+    required this.localDatasource,
+    required this.networkInfo,
+  });
 
   @override
   Future<Either<Failure, List<CharacterEntity>>> getAllCharacters(

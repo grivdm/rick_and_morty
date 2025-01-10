@@ -8,7 +8,7 @@ class LocationModel extends LocationEntity {
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
       'name': name,
-      'url': url,
+      'url': url.toString(),
     };
   }
 

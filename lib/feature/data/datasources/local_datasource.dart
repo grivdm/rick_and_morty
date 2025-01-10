@@ -8,9 +8,11 @@ abstract interface class CharactersLocalDatasource {
 }
 
 class CharactersLocalDatasourcesImpl implements CharactersLocalDatasource {
-  late SharedPreferences sharedPreferences;
+  final SharedPreferences sharedPreferences;
 
   static const CHARACTERS_LIST = 'CHARACTERS_LIST';
+
+  CharactersLocalDatasourcesImpl({required this.sharedPreferences});
 
   @override
   Future<List<CharacterModel>> getLastCharactersFromCahce() {
@@ -29,6 +31,6 @@ class CharactersLocalDatasourcesImpl implements CharactersLocalDatasource {
         characters.map((e) => e.toJson()).toList();
 
     sharedPreferences.setStringList(CHARACTERS_LIST, jsonCharactersList);
-    print(jsonCharactersList.length);
+    print('cached elements: ${jsonCharactersList.length}');
   }
 }

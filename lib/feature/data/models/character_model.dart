@@ -41,8 +41,8 @@ class CharacterModel extends CharacterEntity {
       species: map['species'] as String,
       type: map['type'] as String,
       gender: map['gender'] as String,
-      origin: LocationModel.fromJson(map['origin']),
-      location: LocationModel.fromJson(map['location']),
+      origin: LocationModel.fromMap(map['origin']),
+      location: LocationModel.fromMap(map['location']),
       image: map['image'] as String,
       episode:
           (map['episode'] as List<dynamic>).map((e) => e.toString()).toList(),
