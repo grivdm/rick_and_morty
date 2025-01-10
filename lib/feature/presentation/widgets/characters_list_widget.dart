@@ -44,8 +44,15 @@ class CharactersListWidget extends StatelessWidget {
               controller: scrollController,
               itemBuilder: (context, index) {
                 if (index < charactersList.length) {
-                  return CharacterListCardWidget(
-                      character: charactersList[index]);
+                  return GestureDetector(
+                    onTap: () {
+                      // TODO Add hero animation
+                      Navigator.pushNamed(context, '/character',
+                          arguments: charactersList[index]);
+                    },
+                    child: CharacterListCardWidget(
+                        character: charactersList[index]),
+                  );
                 } else {
                   Timer(
                     const Duration(milliseconds: 30),
