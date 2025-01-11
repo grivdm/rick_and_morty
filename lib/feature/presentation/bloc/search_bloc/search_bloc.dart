@@ -9,19 +9,21 @@ import 'package:rick_and_morty/feature/domain/usecases/search_characters.dart';
 part 'search_event.dart';
 part 'search_state.dart';
 
-class SearchBloc extends Bloc<SearchEvent, SearchState> {
+class SearchCharactersBloc extends Bloc<SearchEvent, SearchCharactersState> {
   SearchCharacters searchCharacters;
-  SearchBloc({required this.searchCharacters}) : super(SearchEmptyState()) {
+  SearchCharactersBloc({required this.searchCharacters})
+      : super(SearchCharactersEmptyState()) {
     on<SearchCharactersEvent>(_onEvent);
   }
 
   FutureOr<void> _onEvent(
-      SearchCharactersEvent event, Emitter<SearchState> emit) async {
-    emit(SearchLoadingState());
+      SearchCharactersEvent event, Emitter<SearchCharactersState> emit) async {
+    emit(SearchCharactersLoadingState());
     final failureOrCharacter =
         await searchCharacters(SearchCharactersParams(query: event.query));
     emit(failureOrCharacter.fold(
-      (failure) => SearchErrorState(message: _mapFailureToMessage(failure)),
+      (failure) =>
+          SearchCharactersErrorState(message: _mapFailureToMessage(failure)),
       (characters) => SearchCharactersLoadedState(characters: characters),
     ));
   }

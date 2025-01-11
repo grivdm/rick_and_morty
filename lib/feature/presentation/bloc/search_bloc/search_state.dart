@@ -1,17 +1,17 @@
 part of 'search_bloc.dart';
 
-sealed class SearchState extends Equatable {
-  const SearchState();
+sealed class SearchCharactersState extends Equatable {
+  const SearchCharactersState();
 
   @override
   List<Object> get props => [];
 }
 
-class SearchEmptyState extends SearchState {}
+class SearchCharactersEmptyState extends SearchCharactersState {}
 
-class SearchLoadingState extends SearchState {}
+class SearchCharactersLoadingState extends SearchCharactersState {}
 
-class SearchCharactersLoadedState extends SearchState {
+class SearchCharactersLoadedState extends SearchCharactersState {
   final List<CharacterEntity> characters;
 
   const SearchCharactersLoadedState({required this.characters});
@@ -20,10 +20,10 @@ class SearchCharactersLoadedState extends SearchState {
   List<Object> get props => [characters];
 }
 
-class SearchErrorState extends SearchState {
+class SearchCharactersErrorState extends SearchCharactersState {
   final String message;
 
-  const SearchErrorState({required this.message});
+  const SearchCharactersErrorState({required this.message});
 
   @override
   List<Object> get props => [message];

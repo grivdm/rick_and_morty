@@ -17,7 +17,7 @@ final sl = GetIt.instance;
 
 init() async {
   sl.registerFactory(() => CharactersListCubit(getAllCharacters: sl()));
-  sl.registerFactory(() => SearchBloc(searchCharacters: sl()));
+  sl.registerFactory(() => SearchCharactersBloc(searchCharacters: sl()));
 
   sl.registerLazySingleton<GetAllCharacters>(() => GetAllCharacters(sl()));
   sl.registerLazySingleton<SearchCharacters>(() => SearchCharacters(sl()));

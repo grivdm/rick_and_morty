@@ -24,8 +24,8 @@ class MainApp extends StatelessWidget {
         BlocProvider<CharactersListCubit>(
           create: (context) => di.sl<CharactersListCubit>()..loadCharacters(),
         ),
-        BlocProvider<SearchBloc>(
-          create: (context) => di.sl<SearchBloc>(),
+        BlocProvider<SearchCharactersBloc>(
+          create: (context) => di.sl<SearchCharactersBloc>(),
         )
       ],
       child: MaterialApp(

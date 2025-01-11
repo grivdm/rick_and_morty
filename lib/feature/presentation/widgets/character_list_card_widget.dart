@@ -49,8 +49,12 @@ class CharacterListCardWidget extends StatelessWidget {
                               : Colors.red,
                         ),
                       ),
-                      Text(
-                        '${character.status} | ${character.species}',
+                      Expanded(
+                        child: Text(
+                          '${character.status} | ${character.species}',
+                          overflow: TextOverflow.ellipsis,
+                          maxLines: 1,
+                        ),
                       )
                     ],
                   ),

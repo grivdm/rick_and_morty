@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:rick_and_morty/feature/domain/entities/character_entity.dart';
 import 'package:rick_and_morty/feature/presentation/bloc/cubit/characters_list_cubit.dart';
 import 'package:rick_and_morty/feature/presentation/widgets/character_list_card_widget.dart';
+import 'package:rick_and_morty/feature/presentation/widgets/loading_widget.dart';
 
 class CharactersListWidget extends StatelessWidget {
   CharactersListWidget({super.key});
@@ -28,7 +29,7 @@ class CharactersListWidget extends StatelessWidget {
         List<CharacterEntity> charactersList = [];
         bool isLoading = false;
         if (state is CharactersListLoadingState && state.isFirstFetch) {
-          return _loadingWidget();
+          return const LoadingWidget();
         } else if (state is CharactersListLoadingState) {
           charactersList = state.oldCharactersList;
           isLoading = true;
@@ -61,7 +62,7 @@ class CharactersListWidget extends StatelessWidget {
                           .jumpTo(scrollController.position.maxScrollExtent);
                     },
                   );
-                  return _loadingWidget();
+                  return const LoadingWidget();
                 }
               },
               separatorBuilder: (context, index) {
@@ -79,12 +80,6 @@ class CharactersListWidget extends StatelessWidget {
       style: const TextStyle(
         fontSize: 22,
       ),
-    );
-  }
-
-  Widget _loadingWidget() {
-    return const Center(
-      child: CircularProgressIndicator(),
     );
   }
 }

@@ -18,6 +18,7 @@ class CharactersLocalDatasourcesImpl implements CharactersLocalDatasource {
   Future<List<CharacterModel>> getLastCharactersFromCahce() {
     final jsonCharactersList = sharedPreferences.getStringList(CHARACTERS_LIST);
     if (jsonCharactersList != null && jsonCharactersList.isNotEmpty) {
+      print('Get characters from Cache: ${jsonCharactersList.length}');
       return Future.value(
           jsonCharactersList.map((e) => CharacterModel.fromJson(e)).toList());
     } else {
