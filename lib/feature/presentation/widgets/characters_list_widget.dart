@@ -47,7 +47,6 @@ class CharactersListWidget extends StatelessWidget {
                 if (index < charactersList.length) {
                   return GestureDetector(
                     onTap: () {
-                      // TODO Add hero animation
                       Navigator.pushNamed(context, '/character',
                           arguments: charactersList[index]);
                     },

@@ -1,6 +1,7 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/material.dart';
 import 'package:rick_and_morty/common/app_colors.dart';
+import 'package:intl/intl.dart' as intl;
 
 import 'package:rick_and_morty/feature/domain/entities/character_entity.dart';
 import 'package:rick_and_morty/feature/presentation/widgets/character_image_widget.dart';
@@ -110,8 +111,8 @@ class CharacterInfoPage extends StatelessWidget {
                 ),
                 _infoField(
                   'Was created',
-                  // TODO add intl
-                  character.created.toIso8601String(),
+                  // character.created.toIso8601String(),
+                  intl.DateFormat('dd.MM.yyyy').format(character.created),
                 ),
               ],
             ),

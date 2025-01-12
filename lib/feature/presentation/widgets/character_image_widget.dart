@@ -22,21 +22,24 @@ class CharacterImageWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return CachedNetworkImage(
-      imageUrl: imageUrl.toString(),
-      width: width,
-      height: height,
-      imageBuilder: (context, imageProvider) {
-        return _imageWidget(imageProvider);
-      },
-      placeholder: (context, url) {
-        return const Center(
-          child: CircularProgressIndicator(),
-        );
-      },
-      errorWidget: (context, url, error) {
-        return _imageWidget(const AssetImage('assets/images/noimage.jpg'));
-      },
+    return Hero(
+      tag: imageUrl,
+      child: CachedNetworkImage(
+        imageUrl: imageUrl.toString(),
+        width: width,
+        height: height,
+        imageBuilder: (context, imageProvider) {
+          return _imageWidget(imageProvider);
+        },
+        placeholder: (context, url) {
+          return const Center(
+            child: CircularProgressIndicator(),
+          );
+        },
+        errorWidget: (context, url, error) {
+          return _imageWidget(const AssetImage('assets/images/noimage.jpg'));
+        },
+      ),
     );
   }
 }
