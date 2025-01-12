@@ -1,3 +1,3 @@
-# rick_and_morty
+# rick and morty
 
-A new Flutter project.
+Example of a project based on clean architecture principles.
