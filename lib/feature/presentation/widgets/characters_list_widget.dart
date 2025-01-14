@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:rick_and_morty/feature/domain/entities/character_entity.dart';
 import 'package:rick_and_morty/feature/presentation/bloc/cubit/characters_list_cubit.dart';
 import 'package:rick_and_morty/feature/presentation/widgets/character_list_card_widget.dart';
+import 'package:rick_and_morty/feature/presentation/widgets/error_message_widget.dart';
 import 'package:rick_and_morty/feature/presentation/widgets/loading_widget.dart';
 
 class CharactersListWidget extends StatelessWidget {
@@ -36,7 +37,9 @@ class CharactersListWidget extends StatelessWidget {
         } else if (state is CharactersListLoadedState) {
           charactersList = state.charactersList;
         } else if (state is CharactersListErrorState) {
-          return _errorWidget(state.message);
+          if (charactersList.isEmpty) {
+            return ErrorMessageWidget(state.message);
+          }
         }
 
         return Padding(
@@ -70,15 +73,6 @@ class CharactersListWidget extends StatelessWidget {
               itemCount: charactersList.length + (isLoading ? 1 : 0)),
         );
       },
-    );
-  }
-
-  Widget _errorWidget(String message) {
-    return Text(
-      message,
-      style: const TextStyle(
-        fontSize: 22,
-      ),
     );
   }
 }
