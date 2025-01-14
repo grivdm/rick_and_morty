@@ -9,15 +9,24 @@ sealed class SearchCharactersState extends Equatable {
 
 class SearchCharactersEmptyState extends SearchCharactersState {}
 
-class SearchCharactersLoadingState extends SearchCharactersState {}
+class SearchCharactersLoadingState extends SearchCharactersState {
+  final List<CharacterEntity> oldCharactersList;
+  final bool isFirstFetch;
 
-class SearchCharactersLoadedState extends SearchCharactersState {
-  final List<CharacterEntity> characters;
-
-  const SearchCharactersLoadedState({required this.characters});
+  const SearchCharactersLoadingState(this.oldCharactersList,
+      {this.isFirstFetch = false});
 
   @override
-  List<Object> get props => [characters];
+  List<Object> get props => [oldCharactersList];
+}
+
+class SearchCharactersLoadedState extends SearchCharactersState {
+  final List<CharacterEntity> charactersList;
+
+  const SearchCharactersLoadedState({required this.charactersList});
+
+  @override
+  List<Object> get props => [charactersList];
 }
 
 class SearchCharactersErrorState extends SearchCharactersState {

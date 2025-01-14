@@ -16,15 +16,34 @@ class SearchCharactersBloc extends Bloc<SearchEvent, SearchCharactersState> {
     on<SearchCharactersEvent>(_onEvent);
   }
 
+  int page = 1;
+  String query = '';
+
   FutureOr<void> _onEvent(
       SearchCharactersEvent event, Emitter<SearchCharactersState> emit) async {
-    emit(SearchCharactersLoadingState());
-    final failureOrCharacter =
-        await searchCharacters(SearchCharactersParams(query: event.query));
+    if (state is SearchCharactersLoadingState) return;
+
+    final currentState = state;
+    List<CharacterEntity> oldCharacters = [];
+    if (query != event.query) {
+      query = event.query;
+      page = 1;
+      oldCharacters.clear();
+    } else if (currentState is SearchCharactersLoadedState) {
+      oldCharacters = currentState.charactersList;
+    }
+
+    emit(SearchCharactersLoadingState(oldCharacters, isFirstFetch: page == 1));
+    final failureOrCharacter = await searchCharacters(
+        SearchCharactersParams(query: event.query, page: page));
     emit(failureOrCharacter.fold(
       (failure) =>
           SearchCharactersErrorState(message: _mapFailureToMessage(failure)),
-      (characters) => SearchCharactersLoadedState(characters: characters),
+      (newCharacters) {
+        page++;
+        oldCharacters.addAll(newCharacters);
+        return SearchCharactersLoadedState(charactersList: oldCharacters);
+      },
     ));
   }
 

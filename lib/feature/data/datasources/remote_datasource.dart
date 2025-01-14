@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 
 import 'package:rick_and_morty/core/errors/exception.dart';
 import 'package:rick_and_morty/feature/data/models/character_model.dart';
@@ -6,7 +7,7 @@ import 'package:http/http.dart' as http;
 
 abstract interface class CharactersRemoteDatasource {
   Future<List<CharacterModel>> getAllCharacters(int page);
-  Future<List<CharacterModel>> searchCharacters(String query);
+  Future<List<CharacterModel>> searchCharacters(String query, int page);
 }
 
 class CharactersRemoteDatasourceImpl implements CharactersRemoteDatasource {
@@ -20,16 +21,17 @@ class CharactersRemoteDatasourceImpl implements CharactersRemoteDatasource {
           'https://rickandmortyapi.com/api/character/?page=$page');
 
   @override
-  Future<List<CharacterModel>> searchCharacters(String query) =>
+  Future<List<CharacterModel>> searchCharacters(String query, int page) =>
       _getCharactersfromUrl(
-          'https://rickandmortyapi.com/api/character/?name=$query');
+          'https://rickandmortyapi.com/api/character/?name=$query&page=$page');
 
   Future<List<CharacterModel>> _getCharactersfromUrl(String url) async {
     final response = await client
         .get(Uri.parse(url), headers: {'Content-Type': 'application/json'});
 
+    log(url, name: 'url request');
+
     if (response.statusCode == 200) {
-      print('response: ${response.body}');
       final rawCharacters = jsonDecode(response.body);
       return (rawCharacters['results'] as List)
           .map((e) => CharacterModel.fromMap(e))

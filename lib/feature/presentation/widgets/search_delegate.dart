@@ -1,8 +1,12 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:rick_and_morty/common/app_colors.dart';
+import 'package:rick_and_morty/feature/domain/entities/character_entity.dart';
 import 'package:rick_and_morty/feature/presentation/bloc/search_bloc/search_bloc.dart';
 import 'package:rick_and_morty/feature/presentation/widgets/character_list_card_widget.dart';
+import 'package:rick_and_morty/feature/presentation/widgets/error_message_widget.dart';
 import 'package:rick_and_morty/feature/presentation/widgets/loading_widget.dart';
 
 class CustomSearchDelegate extends SearchDelegate {
@@ -14,6 +18,8 @@ class CustomSearchDelegate extends SearchDelegate {
     'Summer',
     'Beth',
   ];
+
+  final scrollController = ScrollController();
 
   @override
   List<Widget>? buildActions(BuildContext context) {
@@ -38,39 +44,75 @@ class CustomSearchDelegate extends SearchDelegate {
         onPressed: () => close(context, null));
   }
 
+  void scrollControllerSetup(BuildContext context) {
+    scrollController.addListener(() {
+      if (scrollController.position.atEdge &&
+          scrollController.position.pixels != 0) {
+        context.read<SearchCharactersBloc>().add(SearchCharactersEvent(
+              query,
+            ));
+      }
+    });
+  }
+
   @override
   Widget buildResults(BuildContext context) {
-    BlocProvider.of<SearchCharactersBloc>(context)
-        .add(SearchCharactersEvent(query));
+    List<CharacterEntity> charactersList = [];
+    scrollControllerSetup(context);
+
+    context.read<SearchCharactersBloc>().add(SearchCharactersEvent(
+          query,
+        ));
+
     return BlocBuilder<SearchCharactersBloc, SearchCharactersState>(
       builder: (context, state) {
-        if (state is SearchCharactersLoadingState) {
+        bool isLoading = state is SearchCharactersLoadingState;
+        if (state is SearchCharactersLoadingState && state.isFirstFetch) {
           return const LoadingWidget();
-        } else if (state is SearchCharactersLoadedState) {
-          final charactersList = state.characters;
+        } else if (state is SearchCharactersLoadingState) {
+          charactersList = state.oldCharactersList;
+          isLoading = true;
+        } else if (state is SearchCharactersErrorState) {
           if (charactersList.isEmpty) {
-            return const Text('No Characters found');
-          } else {
-            return Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 8),
-              child: ListView.separated(
-                itemBuilder: (context, index) {
+            return ErrorMessageWidget(state.message);
+          }
+        } else if (state is SearchCharactersLoadedState) {
+          charactersList = state.charactersList;
+        }
+        if (charactersList.isEmpty) {
+          return const Text('No Characters found');
+        } else {
+          return Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 8),
+            child: ListView.separated(
+              controller: scrollController,
+              itemBuilder: (context, index) {
+                if (index < charactersList.length) {
                   return GestureDetector(
                     onTap: () {
+                      close(context, charactersList[index]);
                       Navigator.pushNamed(context, '/character',
                           arguments: charactersList[index]);
                     },
                     child: CharacterListCardWidget(
                         character: charactersList[index]),
                   );
-                },
-                separatorBuilder: (context, index) => const Divider(),
-                itemCount: charactersList.length,
-              ),
-            );
-          }
+                } else {
+                  Timer(
+                    const Duration(milliseconds: 30),
+                    () {
+                      scrollController
+                          .jumpTo(scrollController.position.maxScrollExtent);
+                    },
+                  );
+                  return const LoadingWidget();
+                }
+              },
+              separatorBuilder: (context, index) => const Divider(),
+              itemCount: charactersList.length + (isLoading ? 1 : 0),
+            ),
+          );
         }
-        return Container();
       },
     );
   }
@@ -84,7 +126,7 @@ class CustomSearchDelegate extends SearchDelegate {
           return GestureDetector(
             onTap: () {
               query = _suggestions[index];
-              showSuggestions(context);
+              showResults(context);
             },
             child: Text(
               _suggestions[index],

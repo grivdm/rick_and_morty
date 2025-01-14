@@ -5,5 +5,6 @@ import '../entities/character_entity.dart';
 
 abstract interface class CharacterRepository {
   Future<Either<Failure, List<CharacterEntity>>> getAllCharacters(int page);
-  Future<Either<Failure, List<CharacterEntity>>> searchCharacters(String query);
+  Future<Either<Failure, List<CharacterEntity>>> searchCharacters(
+      String query, int page);
 }

@@ -29,9 +29,9 @@ class CharacterRepositoryImpl implements CharacterRepository {
 
   @override
   Future<Either<Failure, List<CharacterEntity>>> searchCharacters(
-      String query) async {
+      String query, int page) async {
     return _getCharacters(() {
-      return remoteDatasource.searchCharacters(query);
+      return remoteDatasource.searchCharacters(query, page);
     });
   }
 
