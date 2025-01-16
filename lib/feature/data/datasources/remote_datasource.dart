@@ -1,9 +1,10 @@
-import 'dart:convert';
+// import 'dart:convert';
 import 'dart:developer';
 
 import 'package:rick_and_morty/core/errors/exception.dart';
 import 'package:rick_and_morty/feature/data/models/character_model.dart';
 import 'package:http/http.dart' as http;
+import 'package:rick_and_morty/feature/data/models/characters_response_model.dart';
 
 abstract interface class CharactersRemoteDatasource {
   Future<List<CharacterModel>> getAllCharacters(int page);
@@ -32,10 +33,8 @@ class CharactersRemoteDatasourceImpl implements CharactersRemoteDatasource {
     log(url, name: 'url request');
 
     if (response.statusCode == 200) {
-      final rawCharacters = jsonDecode(response.body);
-      return (rawCharacters['results'] as List)
-          .map((e) => CharacterModel.fromMap(e))
-          .toList();
+      final rawCharacters = CharactersResponseModel.fromJson(response.body);
+      return rawCharacters.results;
     } else {
       throw ServerException();
     }
