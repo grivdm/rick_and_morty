@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:rick_and_morty/bloc_observable.dart';
 import 'package:rick_and_morty/common/app_colors.dart';
 import 'package:rick_and_morty/feature/domain/entities/character_entity.dart';
 import 'package:rick_and_morty/feature/presentation/bloc/cubit/characters_list_cubit.dart';
@@ -11,6 +12,7 @@ import 'package:rick_and_morty/locator_service.dart' as di;
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await di.init();
+  Bloc.observer = Observer();
   runApp(const MainApp());
 }
 
