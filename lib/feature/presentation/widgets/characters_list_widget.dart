@@ -8,9 +8,14 @@ import 'package:rick_and_morty/feature/presentation/widgets/character_list_card_
 import 'package:rick_and_morty/feature/presentation/widgets/error_message_widget.dart';
 import 'package:rick_and_morty/feature/presentation/widgets/loading_widget.dart';
 
-class CharactersListWidget extends StatelessWidget {
-  CharactersListWidget({super.key});
+class CharactersListWidget extends StatefulWidget {
+  const CharactersListWidget({super.key});
 
+  @override
+  State<CharactersListWidget> createState() => _CharactersListWidgetState();
+}
+
+class _CharactersListWidgetState extends State<CharactersListWidget> {
   final ScrollController scrollController = ScrollController();
 
   void scrollControllerSetup(BuildContext context) {
@@ -20,6 +25,12 @@ class CharactersListWidget extends StatelessWidget {
         context.read<CharactersListCubit>().loadCharacters();
       }
     });
+  }
+
+  @override
+  void dispose() {
+    scrollController.dispose();
+    super.dispose();
   }
 
   @override

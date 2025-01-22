@@ -41,8 +41,14 @@ class SearchCharactersBloc extends Bloc<SearchEvent, SearchCharactersState> {
     final failureOrCharacter = await searchCharacters(
         SearchCharactersParams(query: event.query, page: page));
     emit(failureOrCharacter.fold(
-      (failure) =>
-          SearchCharactersState.error(message: _mapFailureToMessage(failure)),
+      (failure) {
+        if (oldCharacters.isEmpty) {
+          return SearchCharactersState.error(
+              message: _mapFailureToMessage(failure));
+        } else {
+          return SearchCharactersState.loaded(charactersList: oldCharacters);
+        }
+      },
       (newCharacters) {
         page++;
         oldCharacters.addAll(newCharacters);

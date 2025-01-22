@@ -27,16 +27,19 @@ class CharactersListCubit extends Cubit<CharactersListState> {
 
     final failureOrCharacters =
         await getAllCharacters(GetAllCharactersParams(page: page));
-    failureOrCharacters.fold(
-        (failure) => emit(
-            CharactersListErrorState(message: _mapFailureToMessage(failure))),
-        (data) {
+    emit(failureOrCharacters.fold((failure) {
+      if (oldCharacters.isEmpty) {
+        return CharactersListErrorState(message: _mapFailureToMessage(failure));
+      } else {
+        return CharactersListLoadedState(oldCharacters);
+      }
+    }, (data) {
       page++;
       final characters =
           (state as CharactersListLoadingState).oldCharactersList;
       characters.addAll(data);
-      emit(CharactersListLoadedState(characters));
-    });
+      return CharactersListLoadedState(characters);
+    }));
   }
 
   String _mapFailureToMessage(Failure failure) {
