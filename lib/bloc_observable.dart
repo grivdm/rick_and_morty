@@ -6,12 +6,19 @@ class Observer extends BlocObserver {
   @override
   void onEvent(Bloc bloc, Object? event) {
     super.onEvent(bloc, event);
-    log(event.toString(), name: 'onEvent -- bloc');
+    log('${bloc.runtimeType}, event: $event', name: 'onEvent -- bloc');
+  }
+
+  @override
+  void onChange(BlocBase bloc, Change change) {
+    super.onChange(bloc, change);
+    log('${bloc.runtimeType}, change: $change', name: 'onChange -- bloc');
   }
 
   @override
   void onError(BlocBase bloc, Object error, StackTrace stackTrace) {
     super.onError(bloc, error, stackTrace);
-    log(error.toString(), name: 'onError -- bloc');
+    log('${bloc.runtimeType}, error: $error, stackTrace: $stackTrace',
+        name: 'onError -- bloc');
   }
 }
