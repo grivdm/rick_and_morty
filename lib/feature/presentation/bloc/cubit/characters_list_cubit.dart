@@ -40,7 +40,7 @@ class CharactersListCubit extends Cubit<CharactersListState> {
   }
 
   String _mapFailureToMessage(Failure failure) {
-    switch (failure.runtimeType) {
+    switch (failure) {
       case ServerFailure _:
         return 'Server Failure';
       case CacheFailure _:

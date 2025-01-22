@@ -52,7 +52,7 @@ class SearchCharactersBloc extends Bloc<SearchEvent, SearchCharactersState> {
   }
 
   String _mapFailureToMessage(Failure failure) {
-    switch (failure.runtimeType) {
+    switch (failure) {
       case ServerFailure _:
         return 'Server Failure';
       case CacheFailure _:
