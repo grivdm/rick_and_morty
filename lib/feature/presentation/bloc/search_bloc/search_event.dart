@@ -1,14 +1,20 @@
 part of 'search_bloc.dart';
 
-sealed class SearchEvent extends Equatable {
-  const SearchEvent();
-
-  @override
-  List<Object> get props => [];
+@freezed
+class SearchEvent with _$SearchEvent {
+  const factory SearchEvent.searchCharactersEvent(String query) =
+      SearchCharactersEvent;
 }
 
-class SearchCharactersEvent extends SearchEvent {
-  final String query;
+// sealed class SearchEvent extends Equatable {
+//   const SearchEvent();
 
-  const SearchCharactersEvent(this.query);
-}
+//   @override
+//   List<Object> get props => [];
+// }
+
+// class SearchCharactersEvent extends SearchEvent {
+//   final String query;
+
+//   const SearchCharactersEvent(this.query);
+// }

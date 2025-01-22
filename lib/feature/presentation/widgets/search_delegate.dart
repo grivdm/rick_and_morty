@@ -44,76 +44,81 @@ class CustomSearchDelegate extends SearchDelegate {
         onPressed: () => close(context, null));
   }
 
+  @override
+  void showResults(BuildContext context) {
+    context.read<SearchCharactersBloc>().add(
+          SearchEvent.searchCharactersEvent(query),
+        );
+    super.showResults(context);
+  }
+
   void scrollControllerSetup(BuildContext context) {
     scrollController.addListener(() {
       if (scrollController.position.atEdge &&
           scrollController.position.pixels != 0) {
-        context.read<SearchCharactersBloc>().add(SearchCharactersEvent(
-              query,
-            ));
+        context
+            .read<SearchCharactersBloc>()
+            .add(SearchEvent.searchCharactersEvent(query));
       }
     });
   }
 
   @override
   Widget buildResults(BuildContext context) {
-    List<CharacterEntity> charactersList = [];
+    final state = context.watch<SearchCharactersBloc>().state;
     scrollControllerSetup(context);
 
-    context.read<SearchCharactersBloc>().add(SearchCharactersEvent(
-          query,
-        ));
-
-    return BlocBuilder<SearchCharactersBloc, SearchCharactersState>(
-      builder: (context, state) {
-        bool isLoading = state is SearchCharactersLoadingState;
-        if (state is SearchCharactersLoadingState && state.isFirstFetch) {
+    return state.when(
+      empty: () {
+        return const ErrorMessageWidget('No characters found');
+      },
+      loading: (oldCharactersList, isFirstFetch) {
+        if (isFirstFetch) {
           return const LoadingWidget();
-        } else if (state is SearchCharactersLoadingState) {
-          charactersList = state.oldCharactersList;
-          isLoading = true;
-        } else if (state is SearchCharactersErrorState) {
-          if (charactersList.isEmpty) {
-            return ErrorMessageWidget(state.message);
-          }
-        } else if (state is SearchCharactersLoadedState) {
-          charactersList = state.charactersList;
-        }
-        if (charactersList.isEmpty) {
-          return const Text('No Characters found');
         } else {
-          return Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 8),
-            child: ListView.separated(
-              controller: scrollController,
-              itemBuilder: (context, index) {
-                if (index < charactersList.length) {
-                  return GestureDetector(
-                    onTap: () {
-                      close(context, charactersList[index]);
-                      Navigator.pushNamed(context, '/character',
-                          arguments: charactersList[index]);
-                    },
-                    child: CharacterListCardWidget(
-                        character: charactersList[index]),
-                  );
-                } else {
-                  Timer(
-                    const Duration(milliseconds: 30),
-                    () {
-                      scrollController
-                          .jumpTo(scrollController.position.maxScrollExtent);
-                    },
-                  );
-                  return const LoadingWidget();
-                }
-              },
-              separatorBuilder: (context, index) => const Divider(),
-              itemCount: charactersList.length + (isLoading ? 1 : 0),
-            ),
-          );
+          return _buildCharacterList(oldCharactersList, true);
         }
       },
+      loaded: (newCharactersList) {
+        return _buildCharacterList(newCharactersList, false);
+      },
+      error: (message) {
+        return ErrorMessageWidget(message);
+      },
+    );
+  }
+
+  Widget _buildCharacterList(
+      List<CharacterEntity> charactersList, bool isLoading) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 8),
+      child: ListView.separated(
+        controller: scrollController,
+        itemBuilder: (context, index) {
+          if (index < charactersList.length) {
+            return GestureDetector(
+              onTap: () {
+                close(context, charactersList[index]);
+                Navigator.pushNamed(
+                  context,
+                  '/character',
+                  arguments: charactersList[index],
+                );
+              },
+              child: CharacterListCardWidget(character: charactersList[index]),
+            );
+          } else {
+            Timer(
+              const Duration(milliseconds: 30),
+              () => scrollController
+                  .jumpTo(scrollController.position.maxScrollExtent),
+            );
+            return const LoadingWidget();
+          }
+        },
+        separatorBuilder: (context, index) => const Divider(),
+        itemCount: charactersList.length + (isLoading ? 1 : 0),
+      ),
     );
   }
 

@@ -1,10 +1,12 @@
 import 'dart:async';
+import 'package:freezed_annotation/freezed_annotation.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:equatable/equatable.dart';
 import 'package:rick_and_morty/core/errors/failure.dart';
 import 'package:rick_and_morty/feature/domain/entities/character_entity.dart';
 import 'package:rick_and_morty/feature/domain/usecases/search_characters.dart';
+
+part 'search_bloc.freezed.dart';
 
 part 'search_event.dart';
 part 'search_state.dart';
@@ -12,7 +14,7 @@ part 'search_state.dart';
 class SearchCharactersBloc extends Bloc<SearchEvent, SearchCharactersState> {
   SearchCharacters searchCharacters;
   SearchCharactersBloc({required this.searchCharacters})
-      : super(SearchCharactersEmptyState()) {
+      : super(const SearchCharactersState.empty()) {
     on<SearchCharactersEvent>(_onEvent);
   }
 
@@ -20,8 +22,8 @@ class SearchCharactersBloc extends Bloc<SearchEvent, SearchCharactersState> {
   String query = '';
 
   FutureOr<void> _onEvent(
-      SearchCharactersEvent event, Emitter<SearchCharactersState> emit) async {
-    if (state is SearchCharactersLoadingState) return;
+      SearchEvent event, Emitter<SearchCharactersState> emit) async {
+    if (state is _SearchCharactersLoadingState) return;
 
     final currentState = state;
     List<CharacterEntity> oldCharacters = [];
@@ -29,20 +31,22 @@ class SearchCharactersBloc extends Bloc<SearchEvent, SearchCharactersState> {
       query = event.query;
       page = 1;
       oldCharacters.clear();
-    } else if (currentState is SearchCharactersLoadedState) {
-      oldCharacters = currentState.charactersList;
+      emit(const SearchCharactersState.empty());
+    } else if (currentState is _SearchCharactersLoadedState) {
+      oldCharacters = List.from(currentState.charactersList);
     }
 
-    emit(SearchCharactersLoadingState(oldCharacters, isFirstFetch: page == 1));
+    emit(SearchCharactersState.loading(
+        oldCharactersList: oldCharacters, isFirstFetch: page == 1));
     final failureOrCharacter = await searchCharacters(
         SearchCharactersParams(query: event.query, page: page));
     emit(failureOrCharacter.fold(
       (failure) =>
-          SearchCharactersErrorState(message: _mapFailureToMessage(failure)),
+          SearchCharactersState.error(message: _mapFailureToMessage(failure)),
       (newCharacters) {
         page++;
         oldCharacters.addAll(newCharacters);
-        return SearchCharactersLoadedState(charactersList: oldCharacters);
+        return SearchCharactersState.loaded(charactersList: oldCharacters);
       },
     ));
   }

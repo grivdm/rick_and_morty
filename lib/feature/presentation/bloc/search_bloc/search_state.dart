@@ -1,39 +1,52 @@
 part of 'search_bloc.dart';
 
-sealed class SearchCharactersState extends Equatable {
-  const SearchCharactersState();
-
-  @override
-  List<Object> get props => [];
+@freezed
+class SearchCharactersState with _$SearchCharactersState {
+  const factory SearchCharactersState.empty() = _SearchCharactersEmptyState;
+  const factory SearchCharactersState.loading(
+      {required List<CharacterEntity> oldCharactersList,
+      required bool isFirstFetch}) = _SearchCharactersLoadingState;
+  const factory SearchCharactersState.loaded(
+          {required List<CharacterEntity> charactersList}) =
+      _SearchCharactersLoadedState;
+  const factory SearchCharactersState.error({required String message}) =
+      _SearchCharactersErrorState;
 }
 
-class SearchCharactersEmptyState extends SearchCharactersState {}
+// sealed class SearchCharactersState extends Equatable {
+//   const SearchCharactersState();
 
-class SearchCharactersLoadingState extends SearchCharactersState {
-  final List<CharacterEntity> oldCharactersList;
-  final bool isFirstFetch;
+//   @override
+//   List<Object> get props => [];
+// }
 
-  const SearchCharactersLoadingState(this.oldCharactersList,
-      {this.isFirstFetch = false});
+// class SearchCharactersEmptyState extends SearchCharactersState {}
 
-  @override
-  List<Object> get props => [oldCharactersList];
-}
+// class SearchCharactersLoadingState extends SearchCharactersState {
+//   final List<CharacterEntity> oldCharactersList;
+//   final bool isFirstFetch;
 
-class SearchCharactersLoadedState extends SearchCharactersState {
-  final List<CharacterEntity> charactersList;
+//   const SearchCharactersLoadingState(this.oldCharactersList,
+//       {this.isFirstFetch = false});
 
-  const SearchCharactersLoadedState({required this.charactersList});
+//   @override
+//   List<Object> get props => [oldCharactersList];
+// }
 
-  @override
-  List<Object> get props => [charactersList];
-}
+// class SearchCharactersLoadedState extends SearchCharactersState {
+//   final List<CharacterEntity> charactersList;
 
-class SearchCharactersErrorState extends SearchCharactersState {
-  final String message;
+//   const SearchCharactersLoadedState({required this.charactersList});
 
-  const SearchCharactersErrorState({required this.message});
+//   @override
+//   List<Object> get props => [charactersList];
+// }
 
-  @override
-  List<Object> get props => [message];
-}
+// class SearchCharactersErrorState extends SearchCharactersState {
+//   final String message;
+
+//   const SearchCharactersErrorState({required this.message});
+
+//   @override
+//   List<Object> get props => [message];
+// }
