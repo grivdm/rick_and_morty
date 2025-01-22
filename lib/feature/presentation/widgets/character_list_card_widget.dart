@@ -9,6 +9,29 @@ class CharacterListCardWidget extends StatelessWidget {
   final CharacterEntity character;
   const CharacterListCardWidget({super.key, required this.character});
 
+  Widget _infoField(String title, String info) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          title,
+          style: const TextStyle(
+            fontSize: 12,
+            color: AppColors.greyColor,
+          ),
+        ),
+        Text(
+          info,
+          style: const TextStyle(
+            fontSize: 12,
+          ),
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+        ),
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -61,28 +84,11 @@ class CharacterListCardWidget extends StatelessWidget {
                   const SizedBox(
                     height: 8,
                   ),
-                  const Text(
-                    'Last known location:',
-                    style: TextStyle(
-                      fontSize: 12,
-                      color: AppColors.greyColor,
-                    ),
+                  _infoField('Last known location:', character.location.name),
+                  const SizedBox(
+                    height: 8,
                   ),
-                  Text(
-                    character.location.name,
-                    style: const TextStyle(fontSize: 12),
-                  ),
-                  const Text(
-                    'Origin:',
-                    style: TextStyle(
-                      fontSize: 12,
-                      color: AppColors.greyColor,
-                    ),
-                  ),
-                  Text(
-                    character.origin.name,
-                    style: const TextStyle(fontSize: 12),
-                  ),
+                  _infoField('Origin:', character.origin.name),
                 ],
               ),
             ),
